@@ -1,0 +1,295 @@
+---
+title: "Asignación Individual Isoscapes"
+author: "Óscar Parque"
+format:
+    html: 
+      code-fold: true
+      code-tools: true
+      toc: true
+      toc-location: left-body
+      toc-expand: 2
+      toc-depth: 3
+      toc-title: Índice
+      number-sections: false
+      fig-cap-location: top
+editor: visual
+---
+Este código permite ver cómo es el worlflow para crear las asignaciones individulaes a partir de Isoscapes de Sr, O, y duales
+
+📦 Cargar paquetes necesarios
+
+Primero se cargan los paquetes necesarios para llevar a cabo el análisis de las asignaciones probabilísticas individuales
+
+{r fig.height=5, fig.width=5, message=FALSE, warning=FALSE}
+
+setwd("H:/My Drive/Quarto_Assign_Parque")
+
+paquetes <- c(
+
+"quarto", "assignR", "terra", "tidyterra", "ggplot2", "grid", "rmarkdown", "openxlsx", "tidyverse",
+
+"ranger", "corrplot", "caret", "doParallel", "parallel", "randomForest", "raster", "sf",
+
+"virtualspecies", "VSURF", "xgboost", "readxl", "rnaturalearth", "rnaturalearthdata",
+
+"patchwork", "ggpubr", "rasterVis", "cowplot", "ggspatial", "ggtext", "extrafont","patchwork",
+
+"colorspace", "knitr")
+
+paquetes_no_instalados <- paquetes[!(paquetes %in% installed.packages()[,"Package"])]
+
+if(length(paquetes_no_instalados)) install.packages(paquetes_no_instalados)
+
+invisible(lapply(paquetes, library, character.only = TRUE))
+
+
+🗺️ Cargar ráster de Estroncio y definir Extents
+
+En este paso se van a cargar los Isoscape de estroncio realizqados mediante Random Forest. Se carga el archivo .TIF del Isoscape y el del error asociado.
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+
+iso_sr<- rast("H:/My Drive/Quarto_Assign_Parque/SouthAsia_Random_Forest_predict.tif")
+
+iso_sr_err <-rast("H:/My Drive/Quarto_Assign_Parque/ERROR_SouthAsia_RF_predict.tif")
+
+SouthAsia_extent <- ext(4219687,8213971,1085785,4963850)
+
+Harappa_extent <- ext(5500185, 7400185, 2399837, 4299837)
+
+Indus_lowerbasin <- ext(5800000,6700000,2690000,3900000)
+
+extents <- list(SouthAsia = SouthAsia_extent, Harappa = Harappa_extent, Indus = Indus_lowerbasin)
+
+
+🗾️ Visualización por extents
+
+{r fig.height=15, fig.width=15, message=TRUE, warning=FALSE}
+for (name in names(extents)) {
+ext_actual <- extents[[name]]
+sr_crop <- crop(iso_sr, ext_actual)
+err_crop <- crop(iso_sr_err, ext_actual)
+par(mfrow = c(1, 2))
+plot(sr_crop, main = paste("Sr Isoscape -", name))
+plot(err_crop, main = paste("Error -", name))}
+
+🧩 Recorte y combinación de Isoscapes de estroncio (resultado+error calculado)
+
+Recortamos el mapa por la extensión que nos interesa, en este caso Harappa Extension
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+iso_sr <- crop(iso_sr, Indus_lowerbasin)
+iso_sr_err <- crop(iso_sr_err, Indus_lowerbasin)
+par(mfrow = c(1, 2))
+plot(iso_sr)
+plot(iso_sr_err)
+iso_sr_comb <- c(iso_sr, iso_sr_err)
+names(iso_sr_comb) <- c("Media", "Error")
+par(mfrow = c(1, 1))
+plot(iso_sr_comb)
+
+💧 Rásters de oxígeno (RCWIP)
+
+Cargamos el modelo RCWIP2 (Terzer et. al., 2021) y el de error acumulado (Terzer et. al., 2013)
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+rain_d18O <- rast("H:/My Drive/Quarto_Assign_Parque/RCWIP2_assignacion_SouthAsia_geotiff.tif")
+rain_d18O_err <- rast("H:/My Drive/Quarto_Assign_Parque/RCWIP_grid_err_5_14_100_20130502.tif")
+par(mfrow = c(2, 1))
+plot(rain_d18O)
+plot(rain_d18O_err)
+
+Al graficar el RCWIP de error observamos que hay un sesgo de valores que muestran un valor de -9999, estos son eliminados ya que se tratan de valores NA, que no tiene un valor definido y por lo tanto no son reporducibles (de ahi que se publicaran como valores -9999). Se hace el siguiente paso:
+
+Convertir los valores -9999 del Isoscape de error a 0, para poder trabajar con él
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+rain_d18O_err[rain_d18O_err == -9999] <- 0
+par(mfrow = c(1, 1))
+plot(rain_d18O_err)
+
+Posteriormente reproyectamos ambos mapas de δ¹⁸O a la misma proyección que el mapa de Sr
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+rain_d18O_err <- resample(rain_d18O_err, rain_d18O, method = "bilinear")
+rain_d18O <- project(rain_d18O, crs(iso_sr_comb), method = "bilinear")
+rain_d18O_err <- project(rain_d18O_err, crs(iso_sr_comb), method = "bilinear")
+rain_d18O <- crop(rain_d18O, Indus_lowerbasin)
+rain_d18O_err <- crop(rain_d18O_err, Indus_lowerbasin)
+iso_18O_comb <- c(rain_d18O, rain_d18O_err)
+names(iso_18O_comb) <- c("Media", "Error")
+plot(iso_18O_comb)
+
+✅ Comprovación Isoscape Sr y δ¹⁸O
+
+{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}
+par(mfrow = c(2, 1))
+#Isoscape de Estroncio
+plot(iso_sr_comb)
+#Isoscape de Oxígneo
+plot(iso_18O_comb)
+
+➕Realización de un Isoscape Dual Sr - 18O
+
+Se unifican los Isoscapes de Estroncio y Oxígeno en un solo Isoscape para poder realizar las asignaciones individuales con los dos isótopos. Se unifican tanto los calculados como los de error, para obtener un isoscape calculado y otro del error acumulado.
+
+{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}
+Dual_isoscape_asig <- isoStack(iso_sr_comb, iso_18O_comb)
+plot(Dual_isoscape_asig)
+
+📄 Carga y transformación de datos isotópicos
+
+📂 Paso 0: Ingresar datos isotópicos de los tejidos dentales
+
+Cargamos mediante un archivo .csv los datos isotópicos
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+iso.data.BDQ <- read.csv("G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_BDQ.csv")
+iso.data.TJB <- read.csv("G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_TJB.csv")
+iso.data.BDQ
+iso.data.TJB
+
+💧 Paso 1: Conversión de δ¹⁸O VPDB a VSMOW
+
+La conversión se realiza con la fórmula de Kim et al. (2015):
+
+$$
+\delta^{18}O_{VSMOW} = 1.03092 \times \delta^{18}O_{VPDB} + 30.92
+$$
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+iso.data.BDQ$d18OVSMOW <- iso.data.BDQ$d18O * 1.03092 + 30.92
+iso.data.TJB$d18OVSMOW <- iso.data.TJB$d18O * 1.03092 + 30.92
+
+🧪 Paso 2: Convertir carbonatos (CO₃) a fosfatos (PO₄)
+
+📘 Método Pellegrini et al. (2011)
+
+La conversión de δ¹⁸O medido en carbonatos (CO₃) a fosfatos (PO₄) se realiza mediante la ecuación:
+
+$$
+\delta^{18}O_{PO_4} = 0.950 \times \delta^{18}O_{CO_3} - 7.51
+$$
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+iso.data.TJB$fos_pellegrini2011 <- 0.950 * iso.data.TJB$d18OVSMOW - 7.51
+iso.data.BDQ$fos_pellegrini2011 <- 0.950 * iso.data.BDQ$d18OVSMOW - 7.51
+
+🌧️ Paso 3: Conversión de fosfatos a agua meteórica (caprinos)
+
+🧪 Método Delgado-Huertas et al. (1995)
+
+Fórmula original:
+
+$$
+{\delta^{18}O_{PO_4}= 0.88 \times \delta^{18}O_{\text{agua}} + 24.1}
+$$
+
+Restituimos la fórmula original para calcular δ¹⁸O del agua meteórica a partir del fosfato contenido en el esmalte:
+
+$$
+\delta^{18}O_{\text{agua}} = \frac{(\delta^{18}O_{PO_4} - 24.1)}{0.88}
+$$
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+iso.data.TJB$d18OPaleometeor_Water_Delgado <- (iso.data.TJB$fos_pellegrini2011 - 24.1) / 0.88
+iso.data.BDQ$d18OPaleometeor_Water_Delgado <- (iso.data.BDQ$fos_pellegrini2011 - 24.1) / 0.88
+
+🧾 Resultados isotópicos obtenidos
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+kable(iso.data.BDQ, caption = "Resultados de Isótopos para BDQ")
+kable(iso.data.TJB, caption = "Resultados de Isótopos para TJB")
+
+🧬 Filtrar individuos para trabajar cada uno
+
+{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}
+
+Indiv.2BDQ <- iso.data.BDQ %>% filter(ID %in% c("BDQ.4.1", "BDQ.4.5", "BDQ.4.10", "BDQ.5.1","BDQ.5.7","BDQ.5.12"))
+
+Indiv.2BDQ_try <- subset(Indiv.2BDQ, select=c("ID","Sr","d18OPaleometeor_Water_Delgado"))
+
+Indiv.2BDQ_try
+
+
+🎯 Mapa probabilístico con `assignR` de Estroncio
+
+{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}
+Ind_assig_Sr <- assignR::pdRaster(iso_sr_comb, subset(Indiv.2BDQ, select = c("ID", "Sr")),genplot = T)
+qtl_plot_0.2_Sr <- assignR::qtlRaster(Ind_assig_Sr, threshold = 0.2, thresholdType = "prob",genplot = F)
+
+✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Sr
+
+{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+ggplot()+
+facet_wrap(~lyr, ncol = 3) +
+geom_spatraster(data = qtl_plot_0.2_Sr)+
+scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"), name= "", labels= c("No", "Sí", "No def."))+
+geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +
+labs(x = NULL, y = NULL)+
+theme(panel.grid = element_blank(), panel.ontop = TRUE,
+axis.text = element_text(size = 13, face = "bold", color = "black"),
+panel.background = element_rect(fill = "transparent", color = 'black', size = 0.5),
+strip.text = element_text(size = 13, face = "bold"),
+legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),
+legend.title.align = 0.5, legend.title = element_text(size=12, face="bold"),
+legend.text = element_text(size=12, face="bold")) +
+annotation_scale(location = "tl", width_hint = .18, style = "bar") +
+annotation_north_arrow(location = "bl", which_north = "true",
+pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+style = north_arrow_fancy_orienteering)
+
+🎯 Mapa probabilístico con `assignR` de Oxígeno
+
+{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}
+Ind_assig_Ox <- assignR::pdRaster(iso_18O_comb, subset(Indiv.2BDQ, select = c("ID","d18OPaleometeor_Water_Delgado")),genplot = T)
+qtl_plot_0.2_Ox <- assignR::qtlRaster(Ind_assig_Ox, threshold = 0.2, thresholdType = "prob",genplot = F)
+
+✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Ox
+
+{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+ggplot()+
+facet_wrap(~lyr, ncol = 3) +
+geom_spatraster(data = qtl_plot_0.2_Ox)+
+scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"), name= "", labels= c("No", "Sí", "No def."))+
+geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +
+labs(x = NULL, y = NULL)+
+theme(panel.grid = element_blank(), panel.ontop = TRUE,
+axis.text = element_text(size = 13, face = "bold", color = "black"),
+panel.background = element_rect(fill = "transparent", color = 'black', size = 0.5),
+strip.text = element_text(size = 13, face = "bold"),
+legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),
+legend.title.align = 0.5, legend.title = element_text(size=12, face="bold"),
+legend.text = element_text(size=12, face="bold")) +
+annotation_scale(location = "tl", width_hint = .18, style = "bar") +
+annotation_north_arrow(location = "bl", which_north = "true",
+pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+style = north_arrow_fancy_orienteering)
+
+🎯 Mapa probabilístico con `assignR` Dual (Sr + Oxígeno)
+
+{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}
+Ind_assig_dual <- assignR::pdRaster(Dual_isoscape_asig, subset(Indiv.2BDQ, select = c("ID","Sr", "d18OPaleometeor_Water_Delgado")),genplot = T)
+qtl_plot_0.2_dual <- assignR::qtlRaster(Ind_assig_dual, threshold = 0.2, thresholdType = "prob",genplot = F)
+
+✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape Dual Sr-Oxígeno
+
+{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+ggplot()+
+facet_wrap(~lyr, ncol = 3) +
+geom_spatraster(data = qtl_plot_0.2_dual)+
+scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow", name= "", labels= c("No", "Sí", "No def.")))+
+geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +
+labs(x = NULL, y = NULL)+
+theme(panel.grid = element_blank(), panel.ontop = TRUE,
+axis.text = element_text(size = 13, face = "bold", color = "black"),
+panel.background = element_rect(fill = "transparent", color = 'black', size = 0.5),
+strip.text = element_text(size = 13, face = "bold"),
+legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),
+legend.title.align = 0.5, legend.title = element_text(size=12, face="bold"),
+legend.text = element_text(size=12, face="bold")) +
+annotation_scale(location = "tl", width_hint = .18, style = "bar") +
+annotation_north_arrow(location = "bl", which_north = "true",
+pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+style = north_arrow_fancy_orienteering)
+
