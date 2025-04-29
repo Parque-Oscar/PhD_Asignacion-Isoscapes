@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Óscar Parque">
+
+<title>Asignación Individual Isoscapes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Prueba Quarto_AssignR_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Prueba Quarto_AssignR_files/libs/quarto-html/quarto.js"></script>
+<script src="Prueba Quarto_AssignR_files/libs/quarto-html/popper.min.js"></script>
+<script src="Prueba Quarto_AssignR_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Prueba Quarto_AssignR_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Prueba Quarto_AssignR_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Prueba Quarto_AssignR_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Prueba Quarto_AssignR_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Prueba Quarto_AssignR_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Prueba Quarto_AssignR_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#cargar-paquetes-necesarios" id="toc-cargar-paquetes-necesarios" class="nav-link active" data-scroll-target="#cargar-paquetes-necesarios">📦 Cargar paquetes necesarios</a></li>
+  <li><a href="#cargar-ráster-de-estroncio-y-definir-extents" id="toc-cargar-ráster-de-estroncio-y-definir-extents" class="nav-link" data-scroll-target="#cargar-ráster-de-estroncio-y-definir-extents">🗺️ Cargar ráster de Estroncio y definir Extents</a>
+  <ul class="collapse">
+  <li><a href="#visualización-por-extents" id="toc-visualización-por-extents" class="nav-link" data-scroll-target="#visualización-por-extents">🗾️ Visualización por extents</a></li>
+  </ul></li>
+  <li><a href="#recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado" id="toc-recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado" class="nav-link" data-scroll-target="#recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado">🧩 Recorte y combinación de Isoscapes de estroncio (resultado+error calculado)</a></li>
+  <li><a href="#rásters-de-oxígeno-rcwip" id="toc-rásters-de-oxígeno-rcwip" class="nav-link" data-scroll-target="#rásters-de-oxígeno-rcwip">💧 Rásters de oxígeno (RCWIP)</a>
+  <ul class="collapse">
+  <li><a href="#comprovación-isoscape-sr-y-δ¹⁸o" id="toc-comprovación-isoscape-sr-y-δ¹⁸o" class="nav-link" data-scroll-target="#comprovación-isoscape-sr-y-δ¹⁸o">✅ Comprovación Isoscape Sr y δ¹⁸O</a></li>
+  </ul></li>
+  <li><a href="#realización-de-un-isoscape-dual-sr---18o" id="toc-realización-de-un-isoscape-dual-sr---18o" class="nav-link" data-scroll-target="#realización-de-un-isoscape-dual-sr---18o">➕Realización de un Isoscape Dual Sr - 18O</a></li>
+  <li><a href="#carga-y-transformación-de-datos-isotópicos" id="toc-carga-y-transformación-de-datos-isotópicos" class="nav-link" data-scroll-target="#carga-y-transformación-de-datos-isotópicos">📄 Carga y transformación de datos isotópicos</a>
+  <ul class="collapse">
+  <li><a href="#paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales" id="toc-paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales" class="nav-link" data-scroll-target="#paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales">📂 Paso 0: Ingresar datos isotópicos de los tejidos dentales</a></li>
+  <li><a href="#paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow" id="toc-paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow" class="nav-link" data-scroll-target="#paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow">💧 Paso 1: Conversión de δ¹⁸O VPDB a VSMOW</a></li>
+  <li><a href="#paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄" id="toc-paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄" class="nav-link" data-scroll-target="#paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄">🧪 Paso 2: Convertir carbonatos (CO₃) a fosfatos (PO₄)</a>
+  <ul class="collapse">
+  <li><a href="#método-pellegrini-et-al.-2011" id="toc-método-pellegrini-et-al.-2011" class="nav-link" data-scroll-target="#método-pellegrini-et-al.-2011">📘 Método <strong>Pellegrini et al.&nbsp;(2011)</strong></a></li>
+  </ul></li>
+  <li><a href="#paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos" id="toc-paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos" class="nav-link" data-scroll-target="#paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos">🌧️ Paso 3: Conversión de fosfatos a agua meteórica (caprinos)</a>
+  <ul class="collapse">
+  <li><a href="#método-delgado-huertas-et-al.-1995" id="toc-método-delgado-huertas-et-al.-1995" class="nav-link" data-scroll-target="#método-delgado-huertas-et-al.-1995">🧪 Método <strong>Delgado-Huertas et al.&nbsp;(1995)</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#resultados-isotópicos-obtenidos" id="toc-resultados-isotópicos-obtenidos" class="nav-link" data-scroll-target="#resultados-isotópicos-obtenidos">🧾 Resultados isotópicos obtenidos</a></li>
+  <li><a href="#filtrar-individuos-para-trabajar-cada-uno" id="toc-filtrar-individuos-para-trabajar-cada-uno" class="nav-link" data-scroll-target="#filtrar-individuos-para-trabajar-cada-uno">🧬 Filtrar individuos para trabajar cada uno</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-de-estroncio" id="toc-mapa-probabilístico-con-assignr-de-estroncio" class="nav-link" data-scroll-target="#mapa-probabilístico-con-assignr-de-estroncio">🎯 Mapa probabilístico con `assignR` de Estroncio</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-de-oxígeno" id="toc-mapa-probabilístico-con-assignr-de-oxígeno" class="nav-link" data-scroll-target="#mapa-probabilístico-con-assignr-de-oxígeno">🎯 Mapa probabilístico con `assignR` de Oxígeno</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-dual-sr-oxígeno" id="toc-mapa-probabilístico-con-assignr-dual-sr-oxígeno" class="nav-link" data-scroll-target="#mapa-probabilístico-con-assignr-dual-sr-oxígeno">🎯 Mapa probabilístico con `assignR` Dual (Sr + Oxígeno)</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Asignación Individual Isoscapes</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Óscar Parque </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<nav id="TOC-body" role="doc-toc">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#cargar-paquetes-necesarios" id="toc-cargar-paquetes-necesarios">📦 Cargar paquetes necesarios</a></li>
+  <li><a href="#cargar-ráster-de-estroncio-y-definir-extents" id="toc-cargar-ráster-de-estroncio-y-definir-extents">🗺️ Cargar ráster de Estroncio y definir Extents</a>
+  <ul>
+  <li><a href="#visualización-por-extents" id="toc-visualización-por-extents">🗾️ Visualización por extents</a></li>
+  </ul></li>
+  <li><a href="#recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado" id="toc-recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado">🧩 Recorte y combinación de Isoscapes de estroncio (resultado+error calculado)</a></li>
+  <li><a href="#rásters-de-oxígeno-rcwip" id="toc-rásters-de-oxígeno-rcwip">💧 Rásters de oxígeno (RCWIP)</a>
+  <ul>
+  <li><a href="#comprovación-isoscape-sr-y-δ¹⁸o" id="toc-comprovación-isoscape-sr-y-δ¹⁸o">✅ Comprovación Isoscape Sr y δ¹⁸O</a></li>
+  </ul></li>
+  <li><a href="#realización-de-un-isoscape-dual-sr---18o" id="toc-realización-de-un-isoscape-dual-sr---18o">➕Realización de un Isoscape Dual Sr - 18O</a></li>
+  <li><a href="#carga-y-transformación-de-datos-isotópicos" id="toc-carga-y-transformación-de-datos-isotópicos">📄 Carga y transformación de datos isotópicos</a>
+  <ul>
+  <li><a href="#paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales" id="toc-paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales">📂 Paso 0: Ingresar datos isotópicos de los tejidos dentales</a></li>
+  <li><a href="#paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow" id="toc-paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow">💧 Paso 1: Conversión de δ¹⁸O VPDB a VSMOW</a></li>
+  <li><a href="#paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄" id="toc-paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄">🧪 Paso 2: Convertir carbonatos (CO₃) a fosfatos (PO₄)</a>
+  <ul>
+  <li><a href="#método-pellegrini-et-al.-2011" id="toc-método-pellegrini-et-al.-2011">📘 Método <strong>Pellegrini et al.&nbsp;(2011)</strong></a></li>
+  </ul></li>
+  <li><a href="#paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos" id="toc-paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos">🌧️ Paso 3: Conversión de fosfatos a agua meteórica (caprinos)</a>
+  <ul>
+  <li><a href="#método-delgado-huertas-et-al.-1995" id="toc-método-delgado-huertas-et-al.-1995">🧪 Método <strong>Delgado-Huertas et al.&nbsp;(1995)</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#resultados-isotópicos-obtenidos" id="toc-resultados-isotópicos-obtenidos">🧾 Resultados isotópicos obtenidos</a></li>
+  <li><a href="#filtrar-individuos-para-trabajar-cada-uno" id="toc-filtrar-individuos-para-trabajar-cada-uno">🧬 Filtrar individuos para trabajar cada uno</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-de-estroncio" id="toc-mapa-probabilístico-con-assignr-de-estroncio">🎯 Mapa probabilístico con `assignR` de Estroncio</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-de-oxígeno" id="toc-mapa-probabilístico-con-assignr-de-oxígeno">🎯 Mapa probabilístico con `assignR` de Oxígeno</a></li>
+  <li><a href="#mapa-probabilístico-con-assignr-dual-sr-oxígeno" id="toc-mapa-probabilístico-con-assignr-dual-sr-oxígeno">🎯 Mapa probabilístico con `assignR` Dual (Sr + Oxígeno)</a></li>
+  </ul>
+</nav>
+<p>Este código permite ver cómo es el worlflow para crear las asignaciones individulaes a partir de Isoscapes de Sr, O, y duales</p>
+<section id="cargar-paquetes-necesarios" class="level1">
+<h1>📦 Cargar paquetes necesarios</h1>
+<p>Primero se cargan los paquetes necesarios para llevar a cabo el análisis de las asignaciones probabilísticas individuales</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"H:/My Drive/Quarto_Assign"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>paquetes <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">"quarto"</span>, <span class="st">"assignR"</span>, <span class="st">"terra"</span>, <span class="st">"tidyterra"</span>, <span class="st">"ggplot2"</span>, <span class="st">"grid"</span>, <span class="st">"rmarkdown"</span>, <span class="st">"openxlsx"</span>, <span class="st">"tidyverse"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">"ranger"</span>, <span class="st">"corrplot"</span>, <span class="st">"caret"</span>, <span class="st">"doParallel"</span>, <span class="st">"parallel"</span>, <span class="st">"randomForest"</span>, <span class="st">"raster"</span>, <span class="st">"sf"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="st">"virtualspecies"</span>, <span class="st">"VSURF"</span>, <span class="st">"xgboost"</span>, <span class="st">"readxl"</span>, <span class="st">"rnaturalearth"</span>, <span class="st">"rnaturalearthdata"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="st">"patchwork"</span>, <span class="st">"ggpubr"</span>, <span class="st">"rasterVis"</span>, <span class="st">"cowplot"</span>, <span class="st">"ggspatial"</span>, <span class="st">"ggtext"</span>, <span class="st">"extrafont"</span>,<span class="st">"patchwork"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="st">"colorspace"</span>, <span class="st">"knitr"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>paquetes_no_instalados <span class="ot">&lt;-</span> paquetes[<span class="sc">!</span>(paquetes <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="st">"Package"</span>])]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">length</span>(paquetes_no_instalados)) <span class="fu">install.packages</span>(paquetes_no_instalados)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">lapply</span>(paquetes, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="cargar-ráster-de-estroncio-y-definir-extents" class="level1">
+<h1>🗺️ Cargar ráster de Estroncio y definir Extents</h1>
+<p>En este paso se van a cargar los Isoscape de estroncio realizqados mediante Random Forest. Se carga el archivo .TIF del Isoscape y el del error asociado.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>iso_sr<span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"H:/My Drive/Quarto_Assign/SouthAsia_Random_Forest_predict.tif"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>iso_sr_err <span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="st">"H:/My Drive/Quarto_Assign/ERROR_SouthAsia_RF_predict.tif"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>SouthAsia_extent <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="dv">4219687</span>,<span class="dv">8213971</span>,<span class="dv">1085785</span>,<span class="dv">4963850</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Harappa_extent <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="dv">5500185</span>, <span class="dv">7400185</span>, <span class="dv">2399837</span>, <span class="dv">4299837</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Indus_lowerbasin <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="dv">5800000</span>,<span class="dv">6700000</span>,<span class="dv">2690000</span>,<span class="dv">3900000</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>extents <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">SouthAsia =</span> SouthAsia_extent, <span class="at">Harappa =</span> Harappa_extent, <span class="at">Indus =</span> Indus_lowerbasin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="visualización-por-extents" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-por-extents">🗾️ Visualización por extents</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name <span class="cf">in</span> <span class="fu">names</span>(extents)) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ext_actual <span class="ot">&lt;-</span> extents[[name]]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sr_crop <span class="ot">&lt;-</span> <span class="fu">crop</span>(iso_sr, ext_actual)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>err_crop <span class="ot">&lt;-</span> <span class="fu">crop</span>(iso_sr_err, ext_actual)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sr_crop, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Sr Isoscape -"</span>, name))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(err_crop, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Error -"</span>, name))}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="recorte-y-combinación-de-isoscapes-de-estroncio-resultadoerror-calculado" class="level1">
+<h1>🧩 Recorte y combinación de Isoscapes de estroncio (resultado+error calculado)</h1>
+<p>Recortamos el mapa por la extensión que nos interesa, en este caso Harappa Extension</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>iso_sr <span class="ot">&lt;-</span> <span class="fu">crop</span>(iso_sr, Indus_lowerbasin)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>iso_sr_err <span class="ot">&lt;-</span> <span class="fu">crop</span>(iso_sr_err, Indus_lowerbasin)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_sr)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_sr_err)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>iso_sr_comb <span class="ot">&lt;-</span> <span class="fu">c</span>(iso_sr, iso_sr_err)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(iso_sr_comb) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Media"</span>, <span class="st">"Error"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_sr_comb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rásters-de-oxígeno-rcwip" class="level1">
+<h1>💧 Rásters de oxígeno (RCWIP)</h1>
+<p>Cargamos el modelo RCWIP2 (Terzer et. al., 2021) y el de error acumulado (Terzer et. al., 2013)</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rain_d18O <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"H:/My Drive/Quarto_Assign/RCWIP2_assignacion_SouthAsia_geotiff.tif"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>rain_d18O_err <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"H:/My Drive/Quarto_Assign/RCWIP_grid_err_5_14_100_20130502.tif"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rain_d18O)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rain_d18O_err)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Al graficar el RCWIP de error observamos que hay un sesgo de valores que muestran un valor de -9999, estos son eliminados ya que se tratan de valores NA, que no tiene un valor definido y por lo tanto no son reporducibles (de ahi que se publicaran como valores -9999). Se hace el siguiente paso:</p>
+<p>Convertir los valores -9999 del Isoscape de error a 0, para poder trabajar con él</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rain_d18O_err[rain_d18O_err <span class="sc">==</span> <span class="sc">-</span><span class="dv">9999</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rain_d18O_err)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Posteriormente reproyectamos ambos mapas de δ¹⁸O a la misma proyección que el mapa de Sr</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rain_d18O_err <span class="ot">&lt;-</span> <span class="fu">resample</span>(rain_d18O_err, rain_d18O, <span class="at">method =</span> <span class="st">"bilinear"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rain_d18O <span class="ot">&lt;-</span> <span class="fu">project</span>(rain_d18O, <span class="fu">crs</span>(iso_sr_comb), <span class="at">method =</span> <span class="st">"bilinear"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>rain_d18O_err <span class="ot">&lt;-</span> <span class="fu">project</span>(rain_d18O_err, <span class="fu">crs</span>(iso_sr_comb), <span class="at">method =</span> <span class="st">"bilinear"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>rain_d18O <span class="ot">&lt;-</span> <span class="fu">crop</span>(rain_d18O, Indus_lowerbasin)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>rain_d18O_err <span class="ot">&lt;-</span> <span class="fu">crop</span>(rain_d18O_err, Indus_lowerbasin)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>iso_18O_comb <span class="ot">&lt;-</span> <span class="fu">c</span>(rain_d18O, rain_d18O_err)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(iso_18O_comb) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Media"</span>, <span class="st">"Error"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_18O_comb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="comprovación-isoscape-sr-y-δ¹⁸o" class="level2">
+<h2 class="anchored" data-anchor-id="comprovación-isoscape-sr-y-δ¹⁸o">✅ Comprovación Isoscape Sr y δ¹⁸O</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Isoscape de Estroncio</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_sr_comb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Isoscape de Oxígneo</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(iso_18O_comb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="realización-de-un-isoscape-dual-sr---18o" class="level1">
+<h1>➕Realización de un Isoscape Dual Sr - 18O</h1>
+<p>Se unifican los Isoscapes de Estroncio y Oxígeno en un solo Isoscape para poder realizar las asignaciones individuales con los dos isótopos. Se unifican tanto los calculados como los de error, para obtener un isoscape calculado y otro del error acumulado.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Dual_isoscape_asig <span class="ot">&lt;-</span> <span class="fu">isoStack</span>(iso_sr_comb, iso_18O_comb)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Dual_isoscape_asig)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="carga-y-transformación-de-datos-isotópicos" class="level1">
+<h1>📄 Carga y transformación de datos isotópicos</h1>
+<section id="paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales" class="level2">
+<h2 class="anchored" data-anchor-id="paso-0-ingresar-datos-isotópicos-de-los-tejidos-dentales">📂 Paso 0: Ingresar datos isotópicos de los tejidos dentales</h2>
+<p>Cargamos mediante un archivo .csv los datos isotópicos</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>iso.data.BDQ <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_BDQ.csv"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>iso.data.TJB <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_TJB.csv"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>iso.data.BDQ</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Individuo        ID      Sr d18O Tooth     Lat   Long       Y       X
+1    Indiv.1   BDQ.1.1 0.71172  1.9  M2 U 27.8032 68.327 3577729 6121917
+2    Indiv.1   BDQ.1.6 0.71174  2.9  M2 U 27.8032 68.327 3577729 6121917
+3    Indiv.1  BDQ.1.12 0.71171  1.3  M2 U 27.8032 68.327 3577729 6121917
+4    Indiv.1   BDQ.2.1 0.71171  0.3  M3 U 27.8032 68.327 3577729 6121917
+5    Indiv.1   BDQ.2.7 0.71167  1.4  M3 U 27.8032 68.327 3577729 6121917
+6    Indiv.1  BDQ.2.10 0.71175  3.2  M3 U 27.8032 68.327 3577729 6121917
+7    Indiv.2   BDQ.4.1 0.70933  4.1  M1 L 27.8032 68.327 3577729 6121917
+8    Indiv.2   BDQ.4.5 0.70988  2.7  M1 L 27.8032 68.327 3577729 6121917
+9    Indiv.2  BDQ.4.10 0.71146  3.0  M1 L 27.8032 68.327 3577729 6121917
+10   Indiv.2   BDQ.5.1 0.71097  0.7  M2 L 27.8032 68.327 3577729 6121917
+11   Indiv.2   BDQ.5.7 0.71149  3.2  M2 L 27.8032 68.327 3577729 6121917
+12   Indiv.2  BDQ.5.12 0.71177  3.5  M2 L 27.8032 68.327 3577729 6121917
+13   Indiv.3   BDQ.7.1 0.71225  1.1  M2 U 27.8032 68.327 3577729 6121917
+14   Indiv.3   BDQ.7.4 0.71219  2.4  M2 U 27.8032 68.327 3577729 6121917
+15   Indiv.3   BDQ.7.8 0.71224 -0.8  M2 U 27.8032 68.327 3577729 6121917
+16   Indiv.3   BDQ.8.1 0.71145  2.1  M3 U 27.8032 68.327 3577729 6121917
+17   Indiv.3   BDQ.8.6 0.71037  3.5  M3 U 27.8032 68.327 3577729 6121917
+18   Indiv.3  BDQ.8.11 0.71156  3.0  M3 U 27.8032 68.327 3577729 6121917
+19   Indiv.4  BDQ.10.1 0.71178  3.6  M1 L 27.8032 68.327 3577729 6121917
+20   Indiv.4  BDQ.10.3 0.71179  5.4  M1 L 27.8032 68.327 3577729 6121917
+21   Indiv.4  BDQ.11.1 0.71174  5.0  M2 L 27.8032 68.327 3577729 6121917
+22   Indiv.4  BDQ.11.4 0.71172  8.8  M2 L 27.8032 68.327 3577729 6121917
+23   Indiv.4  BDQ.11.6 0.71170  8.2  M2 L 27.8032 68.327 3577729 6121917
+24   Indiv.5  BDQ.13.1 0.71183  2.2  M2 U 27.8032 68.327 3577729 6121917
+25   Indiv.5  BDQ.13.4 0.71175  1.3  M2 U 27.8032 68.327 3577729 6121917
+26   Indiv.5  BDQ.13.7 0.71170  1.4  M2 U 27.8032 68.327 3577729 6121917
+27   Indiv.5  BDQ.14.1 0.71171  7.4  M3 U 27.8032 68.327 3577729 6121917
+28   Indiv.5  BDQ.14.4 0.71172  8.4  M3 U 27.8032 68.327 3577729 6121917
+29   Indiv.5  BDQ.14.8 0.71187  4.6  M3 U 27.8032 68.327 3577729 6121917
+30   Indiv.6  BDQ.15.1 0.71181 -1.3  M2 U 27.8032 68.327 3577729 6121917
+31   Indiv.6  BDQ.15.6 0.71181 -1.3  M2 U 27.8032 68.327 3577729 6121917
+32   Indiv.6 BDQ.15.13 0.71185 -1.2  M2 U 27.8032 68.327 3577729 6121917
+33   Indiv.6  BDQ.16.1 0.71186 -1.8  M3 U 27.8032 68.327 3577729 6121917
+34   Indiv.6  BDQ.16.7 0.71181 -1.4  M3 U 27.8032 68.327 3577729 6121917
+35   Indiv.6 BDQ.16.12 0.71176 -0.8  M3 U 27.8032 68.327 3577729 6121917</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>iso.data.TJB</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Individuo       ID        Sr      d18O Tooth      Lat     Long       Y
+1    Indiv.1  TJB.3.1 0.7113255 -3.663985  M2 L 26.70056 68.39028 3442415
+2    Indiv.1  TJB.3.6 0.7113516 -3.637147  M2 L 26.70056 68.39028 3442415
+3    Indiv.1 TJB.3.10 0.7113744 -6.937159  M2 L 26.70056 68.39028 3442415
+4    Indiv.1  TJB.4.1 0.7113305 -7.426481  M3 L 26.70056 68.39028 3442415
+5    Indiv.1  TJB.4.6 0.7114059 -5.014354  M3 L 26.70056 68.39028 3442415
+6    Indiv.1 TJB.4.12 0.7113671 -6.690834  M3 L 26.70056 68.39028 3442415
+7    Indiv.2  TJB.5.1 0.7112689 -4.061848  M2 U 26.70056 68.39028 3442415
+8    Indiv.2  TJB.5.4 0.7113012 -1.792153  M2 U 26.70056 68.39028 3442415
+9    Indiv.2  TJB.5.6 0.7112506 -3.208990  M2 U 26.70056 68.39028 3442415
+10   Indiv.2  TJB.6.1 0.7112682 -3.869284  M3 U 26.70056 68.39028 3442415
+11   Indiv.2  TJB.6.5 0.7112713 -2.992687  M3 U 26.70056 68.39028 3442415
+12   Indiv.2 TJB.6.10 0.7112407 -1.560434  M3 U 26.70056 68.39028 3442415
+13   Indiv.3  TJB.7.1 0.7114247  1.350074  M2 U 26.70056 68.39028 3442415
+14   Indiv.3  TJB.7.6 0.7111186  4.119795  M2 U 26.70056 68.39028 3442415
+15   Indiv.3 TJB.7.11 0.7113378  2.354726  M2 U 26.70056 68.39028 3442415
+16   Indiv.3  TJB.8.1 0.7113356  2.121175  M3 U 26.70056 68.39028 3442415
+17   Indiv.3  TJB.8.6 0.7110322  5.668042  M3 U 26.70056 68.39028 3442415
+18   Indiv.3 TJB.8.12 0.7110879  5.034584  M3 U 26.70056 68.39028 3442415
+         X
+1  6151030
+2  6151030
+3  6151030
+4  6151030
+5  6151030
+6  6151030
+7  6151030
+8  6151030
+9  6151030
+10 6151030
+11 6151030
+12 6151030
+13 6151030
+14 6151030
+15 6151030
+16 6151030
+17 6151030
+18 6151030</code></pre>
+</div>
+</div>
+</section>
+<section id="paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow" class="level2">
+<h2 class="anchored" data-anchor-id="paso-1-conversión-de-δ¹⁸o-vpdb-a-vsmow">💧 Paso 1: Conversión de δ¹⁸O VPDB a VSMOW</h2>
+<p>La conversión se realiza con la fórmula de <strong>Kim et al.&nbsp;(2015)</strong>:</p>
+<p><span class="math display">\[
+\delta^{18}O_{VSMOW} = 1.03092 \times \delta^{18}O_{VPDB} + 30.92
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>iso.data.BDQ<span class="sc">$</span>d18OVSMOW <span class="ot">&lt;-</span> iso.data.BDQ<span class="sc">$</span>d18O <span class="sc">*</span> <span class="fl">1.03092</span> <span class="sc">+</span> <span class="fl">30.92</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>iso.data.TJB<span class="sc">$</span>d18OVSMOW <span class="ot">&lt;-</span> iso.data.TJB<span class="sc">$</span>d18O <span class="sc">*</span> <span class="fl">1.03092</span> <span class="sc">+</span> <span class="fl">30.92</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄" class="level2">
+<h2 class="anchored" data-anchor-id="paso-2-convertir-carbonatos-co₃-a-fosfatos-po₄">🧪 Paso 2: Convertir carbonatos (CO₃) a fosfatos (PO₄)</h2>
+<section id="método-pellegrini-et-al.-2011" class="level3">
+<h3 class="anchored" data-anchor-id="método-pellegrini-et-al.-2011">📘 Método <strong>Pellegrini et al.&nbsp;(2011)</strong></h3>
+<p>La conversión de δ¹⁸O medido en carbonatos (CO₃) a fosfatos (PO₄) se realiza mediante la ecuación:</p>
+<p><span class="math display">\[
+\delta^{18}O_{PO_4} = 0.950 \times \delta^{18}O_{CO_3} - 7.51
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>iso.data.TJB<span class="sc">$</span>fos_pellegrini2011 <span class="ot">&lt;-</span> <span class="fl">0.950</span> <span class="sc">*</span> iso.data.TJB<span class="sc">$</span>d18OVSMOW <span class="sc">-</span> <span class="fl">7.51</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>iso.data.BDQ<span class="sc">$</span>fos_pellegrini2011 <span class="ot">&lt;-</span> <span class="fl">0.950</span> <span class="sc">*</span> iso.data.BDQ<span class="sc">$</span>d18OVSMOW <span class="sc">-</span> <span class="fl">7.51</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos" class="level2">
+<h2 class="anchored" data-anchor-id="paso-3-conversión-de-fosfatos-a-agua-meteórica-caprinos">🌧️ Paso 3: Conversión de fosfatos a agua meteórica (caprinos)</h2>
+<section id="método-delgado-huertas-et-al.-1995" class="level3">
+<h3 class="anchored" data-anchor-id="método-delgado-huertas-et-al.-1995">🧪 Método <strong>Delgado-Huertas et al.&nbsp;(1995)</strong></h3>
+<p>Fórmula original:</p>
+<p><span class="math display">\[
+{\delta^{18}O_{PO_4}= 0.88 \times \delta^{18}O_{\text{agua}} + 24.1}
+\]</span></p>
+<p>Restituimos la fórmula original para calcular δ¹⁸O del agua meteórica a partir del fosfato contenido en el esmalte:</p>
+<p><span class="math display">\[
+\delta^{18}O_{\text{agua}} = \frac{(\delta^{18}O_{PO_4} - 24.1)}{0.88}
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>iso.data.TJB<span class="sc">$</span>d18OPaleometeor_Water_Delgado <span class="ot">&lt;-</span> (iso.data.TJB<span class="sc">$</span>fos_pellegrini2011 <span class="sc">-</span> <span class="fl">24.1</span>) <span class="sc">/</span> <span class="fl">0.88</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>iso.data.BDQ<span class="sc">$</span>d18OPaleometeor_Water_Delgado <span class="ot">&lt;-</span> (iso.data.BDQ<span class="sc">$</span>fos_pellegrini2011 <span class="sc">-</span> <span class="fl">24.1</span>) <span class="sc">/</span> <span class="fl">0.88</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+</section>
+<section id="resultados-isotópicos-obtenidos" class="level1">
+<h1>🧾 Resultados isotópicos obtenidos</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(iso.data.BDQ, <span class="at">caption =</span> <span class="st">"Resultados de Isótopos para BDQ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Resultados de Isótopos para BDQ</caption>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Individuo</th>
+<th style="text-align: left;">ID</th>
+<th style="text-align: right;">Sr</th>
+<th style="text-align: right;">d18O</th>
+<th style="text-align: left;">Tooth</th>
+<th style="text-align: right;">Lat</th>
+<th style="text-align: right;">Long</th>
+<th style="text-align: right;">Y</th>
+<th style="text-align: right;">X</th>
+<th style="text-align: right;">d18OVSMOW</th>
+<th style="text-align: right;">fos_pellegrini2011</th>
+<th style="text-align: right;">d18OPaleometeor_Water_Delgado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.1.1</td>
+<td style="text-align: right;">0.71172</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.87875</td>
+<td style="text-align: right;">23.72481</td>
+<td style="text-align: right;">-0.4263516</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.1.6</td>
+<td style="text-align: right;">0.71174</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">33.90967</td>
+<td style="text-align: right;">24.70418</td>
+<td style="text-align: right;">0.6865734</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.1.12</td>
+<td style="text-align: right;">0.71171</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.26020</td>
+<td style="text-align: right;">23.13719</td>
+<td style="text-align: right;">-1.0941066</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.2.1</td>
+<td style="text-align: right;">0.71171</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">31.22928</td>
+<td style="text-align: right;">22.15781</td>
+<td style="text-align: right;">-2.2070316</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.2.7</td>
+<td style="text-align: right;">0.71167</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.36329</td>
+<td style="text-align: right;">23.23512</td>
+<td style="text-align: right;">-0.9828141</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">BDQ.2.10</td>
+<td style="text-align: right;">0.71175</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.21894</td>
+<td style="text-align: right;">24.99800</td>
+<td style="text-align: right;">1.0204509</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.4.1</td>
+<td style="text-align: right;">0.70933</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: left;">M1 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">35.14677</td>
+<td style="text-align: right;">25.87943</td>
+<td style="text-align: right;">2.0220834</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.4.5</td>
+<td style="text-align: right;">0.70988</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: left;">M1 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">33.70348</td>
+<td style="text-align: right;">24.50831</td>
+<td style="text-align: right;">0.4639884</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.4.10</td>
+<td style="text-align: right;">0.71146</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: left;">M1 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.01276</td>
+<td style="text-align: right;">24.80212</td>
+<td style="text-align: right;">0.7978659</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.5.1</td>
+<td style="text-align: right;">0.71097</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">31.64164</td>
+<td style="text-align: right;">22.54956</td>
+<td style="text-align: right;">-1.7618616</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.5.7</td>
+<td style="text-align: right;">0.71149</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.21894</td>
+<td style="text-align: right;">24.99800</td>
+<td style="text-align: right;">1.0204509</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">BDQ.5.12</td>
+<td style="text-align: right;">0.71177</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.52822</td>
+<td style="text-align: right;">25.29181</td>
+<td style="text-align: right;">1.3543284</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.7.1</td>
+<td style="text-align: right;">0.71225</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.05401</td>
+<td style="text-align: right;">22.94131</td>
+<td style="text-align: right;">-1.3166916</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.7.4</td>
+<td style="text-align: right;">0.71219</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">33.39421</td>
+<td style="text-align: right;">24.21450</td>
+<td style="text-align: right;">0.1301109</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.7.8</td>
+<td style="text-align: right;">0.71224</td>
+<td style="text-align: right;">-0.8</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">30.09526</td>
+<td style="text-align: right;">21.08050</td>
+<td style="text-align: right;">-3.4312491</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.8.1</td>
+<td style="text-align: right;">0.71145</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">33.08493</td>
+<td style="text-align: right;">23.92069</td>
+<td style="text-align: right;">-0.2037666</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.8.6</td>
+<td style="text-align: right;">0.71037</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.52822</td>
+<td style="text-align: right;">25.29181</td>
+<td style="text-align: right;">1.3543284</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">BDQ.8.11</td>
+<td style="text-align: right;">0.71156</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.01276</td>
+<td style="text-align: right;">24.80212</td>
+<td style="text-align: right;">0.7978659</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.4</td>
+<td style="text-align: left;">BDQ.10.1</td>
+<td style="text-align: right;">0.71178</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: left;">M1 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">34.63131</td>
+<td style="text-align: right;">25.38975</td>
+<td style="text-align: right;">1.4656209</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.4</td>
+<td style="text-align: left;">BDQ.10.3</td>
+<td style="text-align: right;">0.71179</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: left;">M1 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">36.48697</td>
+<td style="text-align: right;">27.15262</td>
+<td style="text-align: right;">3.4688859</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.4</td>
+<td style="text-align: left;">BDQ.11.1</td>
+<td style="text-align: right;">0.71174</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">36.07460</td>
+<td style="text-align: right;">26.76087</td>
+<td style="text-align: right;">3.0237159</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.4</td>
+<td style="text-align: left;">BDQ.11.4</td>
+<td style="text-align: right;">0.71172</td>
+<td style="text-align: right;">8.8</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">39.99210</td>
+<td style="text-align: right;">30.48249</td>
+<td style="text-align: right;">7.2528309</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.4</td>
+<td style="text-align: left;">BDQ.11.6</td>
+<td style="text-align: right;">0.71170</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">39.37354</td>
+<td style="text-align: right;">29.89487</td>
+<td style="text-align: right;">6.5850759</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.13.1</td>
+<td style="text-align: right;">0.71183</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">33.18802</td>
+<td style="text-align: right;">24.01862</td>
+<td style="text-align: right;">-0.0924741</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.13.4</td>
+<td style="text-align: right;">0.71175</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.26020</td>
+<td style="text-align: right;">23.13719</td>
+<td style="text-align: right;">-1.0941066</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.13.7</td>
+<td style="text-align: right;">0.71170</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">32.36329</td>
+<td style="text-align: right;">23.23512</td>
+<td style="text-align: right;">-0.9828141</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.14.1</td>
+<td style="text-align: right;">0.71171</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">38.54881</td>
+<td style="text-align: right;">29.11137</td>
+<td style="text-align: right;">5.6947359</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.14.4</td>
+<td style="text-align: right;">0.71172</td>
+<td style="text-align: right;">8.4</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">39.57973</td>
+<td style="text-align: right;">30.09074</td>
+<td style="text-align: right;">6.8076609</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.5</td>
+<td style="text-align: left;">BDQ.14.8</td>
+<td style="text-align: right;">0.71187</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">35.66223</td>
+<td style="text-align: right;">26.36912</td>
+<td style="text-align: right;">2.5785459</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.15.1</td>
+<td style="text-align: right;">0.71181</td>
+<td style="text-align: right;">-1.3</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">29.57980</td>
+<td style="text-align: right;">20.59081</td>
+<td style="text-align: right;">-3.9877116</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.15.6</td>
+<td style="text-align: right;">0.71181</td>
+<td style="text-align: right;">-1.3</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">29.57980</td>
+<td style="text-align: right;">20.59081</td>
+<td style="text-align: right;">-3.9877116</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.15.13</td>
+<td style="text-align: right;">0.71185</td>
+<td style="text-align: right;">-1.2</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">29.68290</td>
+<td style="text-align: right;">20.68875</td>
+<td style="text-align: right;">-3.8764191</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.16.1</td>
+<td style="text-align: right;">0.71186</td>
+<td style="text-align: right;">-1.8</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">29.06434</td>
+<td style="text-align: right;">20.10113</td>
+<td style="text-align: right;">-4.5441741</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.16.7</td>
+<td style="text-align: right;">0.71181</td>
+<td style="text-align: right;">-1.4</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">29.47671</td>
+<td style="text-align: right;">20.49288</td>
+<td style="text-align: right;">-4.0990041</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.6</td>
+<td style="text-align: left;">BDQ.16.12</td>
+<td style="text-align: right;">0.71176</td>
+<td style="text-align: right;">-0.8</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">27.8032</td>
+<td style="text-align: right;">68.327</td>
+<td style="text-align: right;">3577729</td>
+<td style="text-align: right;">6121917</td>
+<td style="text-align: right;">30.09526</td>
+<td style="text-align: right;">21.08050</td>
+<td style="text-align: right;">-3.4312491</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(iso.data.TJB, <span class="at">caption =</span> <span class="st">"Resultados de Isótopos para TJB"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Resultados de Isótopos para TJB</caption>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Individuo</th>
+<th style="text-align: left;">ID</th>
+<th style="text-align: right;">Sr</th>
+<th style="text-align: right;">d18O</th>
+<th style="text-align: left;">Tooth</th>
+<th style="text-align: right;">Lat</th>
+<th style="text-align: right;">Long</th>
+<th style="text-align: right;">Y</th>
+<th style="text-align: right;">X</th>
+<th style="text-align: right;">d18OVSMOW</th>
+<th style="text-align: right;">fos_pellegrini2011</th>
+<th style="text-align: right;">d18OPaleometeor_Water_Delgado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.3.1</td>
+<td style="text-align: right;">0.7113255</td>
+<td style="text-align: right;">-3.663985</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">27.14272</td>
+<td style="text-align: right;">18.27559</td>
+<td style="text-align: right;">-6.6186497</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.3.6</td>
+<td style="text-align: right;">0.7113516</td>
+<td style="text-align: right;">-3.637147</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">27.17039</td>
+<td style="text-align: right;">18.30187</td>
+<td style="text-align: right;">-6.5887812</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.3.10</td>
+<td style="text-align: right;">0.7113744</td>
+<td style="text-align: right;">-6.937159</td>
+<td style="text-align: left;">M2 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">23.76834</td>
+<td style="text-align: right;">15.06993</td>
+<td style="text-align: right;">-10.2614469</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.4.1</td>
+<td style="text-align: right;">0.7113305</td>
+<td style="text-align: right;">-7.426481</td>
+<td style="text-align: left;">M3 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">23.26389</td>
+<td style="text-align: right;">14.59070</td>
+<td style="text-align: right;">-10.8060258</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.4.6</td>
+<td style="text-align: right;">0.7114059</td>
+<td style="text-align: right;">-5.014354</td>
+<td style="text-align: left;">M3 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">25.75060</td>
+<td style="text-align: right;">16.95307</td>
+<td style="text-align: right;">-8.1215090</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.1</td>
+<td style="text-align: left;">TJB.4.12</td>
+<td style="text-align: right;">0.7113671</td>
+<td style="text-align: right;">-6.690834</td>
+<td style="text-align: left;">M3 L</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">24.02229</td>
+<td style="text-align: right;">15.31117</td>
+<td style="text-align: right;">-9.9873052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.5.1</td>
+<td style="text-align: right;">0.7112689</td>
+<td style="text-align: right;">-4.061848</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">26.73256</td>
+<td style="text-align: right;">17.88593</td>
+<td style="text-align: right;">-7.0614418</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.5.4</td>
+<td style="text-align: right;">0.7113012</td>
+<td style="text-align: right;">-1.792153</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">29.07243</td>
+<td style="text-align: right;">20.10881</td>
+<td style="text-align: right;">-4.5354412</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.5.6</td>
+<td style="text-align: right;">0.7112506</td>
+<td style="text-align: right;">-3.208990</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">27.61179</td>
+<td style="text-align: right;">18.72120</td>
+<td style="text-align: right;">-6.1122747</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.6.1</td>
+<td style="text-align: right;">0.7112682</td>
+<td style="text-align: right;">-3.869284</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">26.93108</td>
+<td style="text-align: right;">18.07452</td>
+<td style="text-align: right;">-6.8471318</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.6.5</td>
+<td style="text-align: right;">0.7112713</td>
+<td style="text-align: right;">-2.992687</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">27.83478</td>
+<td style="text-align: right;">18.93304</td>
+<td style="text-align: right;">-5.8715450</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.2</td>
+<td style="text-align: left;">TJB.6.10</td>
+<td style="text-align: right;">0.7112407</td>
+<td style="text-align: right;">-1.560434</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">29.31132</td>
+<td style="text-align: right;">20.33575</td>
+<td style="text-align: right;">-4.2775548</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.7.1</td>
+<td style="text-align: right;">0.7114247</td>
+<td style="text-align: right;">1.350074</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">32.31182</td>
+<td style="text-align: right;">23.18623</td>
+<td style="text-align: right;">-1.0383782</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.7.6</td>
+<td style="text-align: right;">0.7111186</td>
+<td style="text-align: right;">4.119795</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">35.16718</td>
+<td style="text-align: right;">25.89882</td>
+<td style="text-align: right;">2.0441141</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.7.11</td>
+<td style="text-align: right;">0.7113378</td>
+<td style="text-align: right;">2.354726</td>
+<td style="text-align: left;">M2 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">33.34753</td>
+<td style="text-align: right;">24.17016</td>
+<td style="text-align: right;">0.0797248</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.8.1</td>
+<td style="text-align: right;">0.7113356</td>
+<td style="text-align: right;">2.121175</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">33.10676</td>
+<td style="text-align: right;">23.94142</td>
+<td style="text-align: right;">-0.1802009</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.8.6</td>
+<td style="text-align: right;">0.7110322</td>
+<td style="text-align: right;">5.668042</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">36.76330</td>
+<td style="text-align: right;">27.41513</td>
+<td style="text-align: right;">3.7671963</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indiv.3</td>
+<td style="text-align: left;">TJB.8.12</td>
+<td style="text-align: right;">0.7110879</td>
+<td style="text-align: right;">5.034584</td>
+<td style="text-align: left;">M3 U</td>
+<td style="text-align: right;">26.70056</td>
+<td style="text-align: right;">68.39028</td>
+<td style="text-align: right;">3442415</td>
+<td style="text-align: right;">6151030</td>
+<td style="text-align: right;">36.11025</td>
+<td style="text-align: right;">26.79474</td>
+<td style="text-align: right;">3.0622057</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="filtrar-individuos-para-trabajar-cada-uno" class="level1">
+<h1>🧬 Filtrar individuos para trabajar cada uno</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Indiv<span class="fl">.1</span>BDQ <span class="ot">&lt;-</span> iso.data.BDQ <span class="sc">%&gt;%</span> <span class="fu">filter</span>(ID <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"BDQ.1.1"</span>, <span class="st">"BDQ.1.6"</span>, <span class="st">"BDQ.1.12"</span>, <span class="st">"BDQ.2.1"</span>,<span class="st">"BDQ.2.7"</span>,<span class="st">"BDQ.2.10"</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>Indiv<span class="fl">.1</span>BDQ_try <span class="ot">&lt;-</span> <span class="fu">subset</span>(Indiv<span class="fl">.1</span>BDQ, <span class="at">select=</span><span class="fu">c</span>(<span class="st">"ID"</span>,<span class="st">"Sr"</span>,<span class="st">"d18OPaleometeor_Water_Delgado"</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>Indiv<span class="fl">.1</span>BDQ_try</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        ID      Sr d18OPaleometeor_Water_Delgado
+1  BDQ.1.1 0.71172                    -0.4263516
+2  BDQ.1.6 0.71174                     0.6865734
+3 BDQ.1.12 0.71171                    -1.0941066
+4  BDQ.2.1 0.71171                    -2.2070316
+5  BDQ.2.7 0.71167                    -0.9828141
+6 BDQ.2.10 0.71175                     1.0204509</code></pre>
+</div>
+</div>
+</section>
+<section id="mapa-probabilístico-con-assignr-de-estroncio" class="level1 page-columns page-full">
+<h1>🎯 Mapa probabilístico con `assignR` de Estroncio</h1>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Ind_assig_Sr <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">pdRaster</span>(iso_sr_comb, <span class="fu">subset</span>(Indiv<span class="fl">.1</span>BDQ, <span class="at">select =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Sr"</span>)))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>qtl_plot_0<span class="fl">.2</span>_Sr <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">qtlRaster</span>(Ind_assig_Sr, <span class="at">threshold =</span> <span class="fl">0.2</span>, <span class="at">thresholdType =</span> <span class="st">"prob"</span>,<span class="at">genplot =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell column-page quarto-layout-panel" data-layout-nrow="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+</div>
+<p>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Sr</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot()+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_spatraster(data = qtl_plot_0.2_Sr)+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"#), name= "", labels= c("No", "Sí", "No def."))+</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#panel.background = element_rect(fill = "transparent", color = 'black', #size = 0.5),</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.title.align = 0.5, legend.title = element_text(size=12, face#="bold"),</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co">#style = north_arrow_fancy_orienteering)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="mapa-probabilístico-con-assignr-de-oxígeno" class="level1 page-columns page-full">
+<h1>🎯 Mapa probabilístico con `assignR` de Oxígeno</h1>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Ind_assig_Ox <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">pdRaster</span>(iso_18O_comb, <span class="fu">subset</span>(Indiv<span class="fl">.1</span>BDQ, <span class="at">select =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"d18OPaleometeor_Water_Delgado"</span>)))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>qtl_plot_0<span class="fl">.2</span>_Ox <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">qtlRaster</span>(Ind_assig_Ox, <span class="at">threshold =</span> <span class="fl">0.2</span>, <span class="at">thresholdType =</span> <span class="st">"prob"</span>,<span class="at">genplot =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell column-page quarto-layout-panel" data-layout-nrow="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+</div>
+<p>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Ox</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot()+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_spatraster(data = qtl_plot_0.2_Ox)+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"#), name= "", labels= c("No", "Sí", "No #def."))+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#panel.background = element_rect(fill = "transparent", color = 'black', #size = 0.5),</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.title.align = 0.5, legend.title = element_text(size=12, face#="bold"),</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co">#style = north_arrow_fancy_orienteering)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="mapa-probabilístico-con-assignr-dual-sr-oxígeno" class="level1 page-columns page-full">
+<h1>🎯 Mapa probabilístico con `assignR` Dual (Sr + Oxígeno)</h1>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Ind_assig_dual <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">pdRaster</span>(Dual_isoscape_asig, <span class="fu">subset</span>(Indiv<span class="fl">.1</span>BDQ, <span class="at">select =</span> <span class="fu">c</span>(<span class="st">"ID"</span>,<span class="st">"Sr"</span>, <span class="st">"d18OPaleometeor_Water_Delgado"</span>)))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>qtl_plot_0<span class="fl">.2</span>_dual <span class="ot">&lt;-</span> assignR<span class="sc">::</span><span class="fu">qtlRaster</span>(Ind_assig_dual, <span class="at">threshold =</span> <span class="fl">0.2</span>, <span class="at">thresholdType =</span> <span class="st">"prob"</span>,<span class="at">genplot =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell column-page quarto-layout-panel" data-layout-nrow="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="Prueba-Quarto_AssignR_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+</div>
+<p>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Sr</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot()+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_spatraster(data = qtl_plot_0.2_dual)+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"), name= "", labels= c("No", "Sí", "No ##def."))+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#panel.background = element_rect(fill = "transparent", color = 'black', size = 0.5),</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.title.align = 0.5, legend.title = element_text(size=12, face="bold"),</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co">#style = north_arrow_fancy_orienteering)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb32" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Asignación Individual Isoscapes"</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Óscar Parque"</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">    html: </span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">      code-fold: true</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">      code-tools: true</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">      toc: true</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">      toc-location: left-body</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">      toc-expand: 2</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">      toc-depth: 3</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">      toc-title: Índice</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">      number-sections: false</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>Este código permite ver cómo es el worlflow para crear las asignaciones individulaes a partir de Isoscapes de Sr, O, y duales</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># 📦 Cargar paquetes necesarios</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>Primero se cargan los paquetes necesarios para llevar a cabo el análisis de las asignaciones probabilísticas individuales</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=FALSE, warning=FALSE}</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="in">setwd("H:/My Drive/Quarto_Assign")</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a><span class="in">paquetes &lt;- c(</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="in">"quarto", "assignR", "terra", "tidyterra", "ggplot2", "grid", "rmarkdown", "openxlsx", "tidyverse",</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="in">"ranger", "corrplot", "caret", "doParallel", "parallel", "randomForest", "raster", "sf",</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a><span class="in">"virtualspecies", "VSURF", "xgboost", "readxl", "rnaturalearth", "rnaturalearthdata",</span></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="in">"patchwork", "ggpubr", "rasterVis", "cowplot", "ggspatial", "ggtext", "extrafont","patchwork",</span></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="in">"colorspace", "knitr")</span></span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a><span class="in">paquetes_no_instalados &lt;- paquetes[!(paquetes %in% installed.packages()[,"Package"])]</span></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a><span class="in">if(length(paquetes_no_instalados)) install.packages(paquetes_no_instalados)</span></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a><span class="in">invisible(lapply(paquetes, library, character.only = TRUE))</span></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🗺️ Cargar ráster de Estroncio y definir Extents</span></span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a>En este paso se van a cargar los Isoscape de estroncio realizqados mediante Random Forest. Se carga el archivo .TIF del Isoscape y el del error asociado.</span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a><span class="in">iso_sr&lt;- rast("H:/My Drive/Quarto_Assign/SouthAsia_Random_Forest_predict.tif")</span></span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a><span class="in">iso_sr_err &lt;-rast("H:/My Drive/Quarto_Assign/ERROR_SouthAsia_RF_predict.tif")</span></span>
+<span id="cb32-56"><a href="#cb32-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-57"><a href="#cb32-57" aria-hidden="true" tabindex="-1"></a><span class="in">SouthAsia_extent &lt;- ext(4219687,8213971,1085785,4963850)</span></span>
+<span id="cb32-58"><a href="#cb32-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-59"><a href="#cb32-59" aria-hidden="true" tabindex="-1"></a><span class="in">Harappa_extent &lt;- ext(5500185, 7400185, 2399837, 4299837)</span></span>
+<span id="cb32-60"><a href="#cb32-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-61"><a href="#cb32-61" aria-hidden="true" tabindex="-1"></a><span class="in">Indus_lowerbasin &lt;- ext(5800000,6700000,2690000,3900000)</span></span>
+<span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a><span class="in">extents &lt;- list(SouthAsia = SouthAsia_extent, Harappa = Harappa_extent, Indus = Indus_lowerbasin)</span></span>
+<span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-65"><a href="#cb32-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-66"><a href="#cb32-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-67"><a href="#cb32-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🗾️ Visualización por extents</span></span>
+<span id="cb32-68"><a href="#cb32-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-69"><a href="#cb32-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=15, fig.width=15, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-70"><a href="#cb32-70" aria-hidden="true" tabindex="-1"></a><span class="in">for (name in names(extents)) {</span></span>
+<span id="cb32-71"><a href="#cb32-71" aria-hidden="true" tabindex="-1"></a><span class="in">ext_actual &lt;- extents[[name]]</span></span>
+<span id="cb32-72"><a href="#cb32-72" aria-hidden="true" tabindex="-1"></a><span class="in">sr_crop &lt;- crop(iso_sr, ext_actual)</span></span>
+<span id="cb32-73"><a href="#cb32-73" aria-hidden="true" tabindex="-1"></a><span class="in">err_crop &lt;- crop(iso_sr_err, ext_actual)</span></span>
+<span id="cb32-74"><a href="#cb32-74" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(1, 2))</span></span>
+<span id="cb32-75"><a href="#cb32-75" aria-hidden="true" tabindex="-1"></a><span class="in">plot(sr_crop, main = paste("Sr Isoscape -", name))</span></span>
+<span id="cb32-76"><a href="#cb32-76" aria-hidden="true" tabindex="-1"></a><span class="in">plot(err_crop, main = paste("Error -", name))}</span></span>
+<span id="cb32-77"><a href="#cb32-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-78"><a href="#cb32-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-79"><a href="#cb32-79" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🧩 Recorte y combinación de Isoscapes de estroncio (resultado+error calculado)</span></span>
+<span id="cb32-80"><a href="#cb32-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-81"><a href="#cb32-81" aria-hidden="true" tabindex="-1"></a>Recortamos el mapa por la extensión que nos interesa, en este caso Harappa Extension</span>
+<span id="cb32-82"><a href="#cb32-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-83"><a href="#cb32-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-84"><a href="#cb32-84" aria-hidden="true" tabindex="-1"></a><span class="in">iso_sr &lt;- crop(iso_sr, Indus_lowerbasin)</span></span>
+<span id="cb32-85"><a href="#cb32-85" aria-hidden="true" tabindex="-1"></a><span class="in">iso_sr_err &lt;- crop(iso_sr_err, Indus_lowerbasin)</span></span>
+<span id="cb32-86"><a href="#cb32-86" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(1, 2))</span></span>
+<span id="cb32-87"><a href="#cb32-87" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_sr)</span></span>
+<span id="cb32-88"><a href="#cb32-88" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_sr_err)</span></span>
+<span id="cb32-89"><a href="#cb32-89" aria-hidden="true" tabindex="-1"></a><span class="in">iso_sr_comb &lt;- c(iso_sr, iso_sr_err)</span></span>
+<span id="cb32-90"><a href="#cb32-90" aria-hidden="true" tabindex="-1"></a><span class="in">names(iso_sr_comb) &lt;- c("Media", "Error")</span></span>
+<span id="cb32-91"><a href="#cb32-91" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(1, 1))</span></span>
+<span id="cb32-92"><a href="#cb32-92" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_sr_comb)</span></span>
+<span id="cb32-93"><a href="#cb32-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-94"><a href="#cb32-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-95"><a href="#cb32-95" aria-hidden="true" tabindex="-1"></a><span class="fu"># 💧 Rásters de oxígeno (RCWIP)</span></span>
+<span id="cb32-96"><a href="#cb32-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-97"><a href="#cb32-97" aria-hidden="true" tabindex="-1"></a>Cargamos el modelo RCWIP2 (Terzer et. al., 2021) y el de error acumulado (Terzer et. al., 2013)</span>
+<span id="cb32-98"><a href="#cb32-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-99"><a href="#cb32-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-100"><a href="#cb32-100" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O &lt;- rast("H:/My Drive/Quarto_Assign/RCWIP2_assignacion_SouthAsia_geotiff.tif")</span></span>
+<span id="cb32-101"><a href="#cb32-101" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O_err &lt;- rast("H:/My Drive/Quarto_Assign/RCWIP_grid_err_5_14_100_20130502.tif")</span></span>
+<span id="cb32-102"><a href="#cb32-102" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(2, 1))</span></span>
+<span id="cb32-103"><a href="#cb32-103" aria-hidden="true" tabindex="-1"></a><span class="in">plot(rain_d18O)</span></span>
+<span id="cb32-104"><a href="#cb32-104" aria-hidden="true" tabindex="-1"></a><span class="in">plot(rain_d18O_err)</span></span>
+<span id="cb32-105"><a href="#cb32-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-106"><a href="#cb32-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-107"><a href="#cb32-107" aria-hidden="true" tabindex="-1"></a>Al graficar el RCWIP de error observamos que hay un sesgo de valores que muestran un valor de -9999, estos son eliminados ya que se tratan de valores NA, que no tiene un valor definido y por lo tanto no son reporducibles (de ahi que se publicaran como valores -9999). Se hace el siguiente paso:</span>
+<span id="cb32-108"><a href="#cb32-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-109"><a href="#cb32-109" aria-hidden="true" tabindex="-1"></a>Convertir los valores -9999 del Isoscape de error a 0, para poder trabajar con él</span>
+<span id="cb32-110"><a href="#cb32-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-111"><a href="#cb32-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-112"><a href="#cb32-112" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O_err[rain_d18O_err == -9999] &lt;- 0</span></span>
+<span id="cb32-113"><a href="#cb32-113" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(1, 1))</span></span>
+<span id="cb32-114"><a href="#cb32-114" aria-hidden="true" tabindex="-1"></a><span class="in">plot(rain_d18O_err)</span></span>
+<span id="cb32-115"><a href="#cb32-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-116"><a href="#cb32-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-117"><a href="#cb32-117" aria-hidden="true" tabindex="-1"></a>Posteriormente reproyectamos ambos mapas de δ¹⁸O a la misma proyección que el mapa de Sr</span>
+<span id="cb32-118"><a href="#cb32-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-119"><a href="#cb32-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-120"><a href="#cb32-120" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O_err &lt;- resample(rain_d18O_err, rain_d18O, method = "bilinear")</span></span>
+<span id="cb32-121"><a href="#cb32-121" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O &lt;- project(rain_d18O, crs(iso_sr_comb), method = "bilinear")</span></span>
+<span id="cb32-122"><a href="#cb32-122" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O_err &lt;- project(rain_d18O_err, crs(iso_sr_comb), method = "bilinear")</span></span>
+<span id="cb32-123"><a href="#cb32-123" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O &lt;- crop(rain_d18O, Indus_lowerbasin)</span></span>
+<span id="cb32-124"><a href="#cb32-124" aria-hidden="true" tabindex="-1"></a><span class="in">rain_d18O_err &lt;- crop(rain_d18O_err, Indus_lowerbasin)</span></span>
+<span id="cb32-125"><a href="#cb32-125" aria-hidden="true" tabindex="-1"></a><span class="in">iso_18O_comb &lt;- c(rain_d18O, rain_d18O_err)</span></span>
+<span id="cb32-126"><a href="#cb32-126" aria-hidden="true" tabindex="-1"></a><span class="in">names(iso_18O_comb) &lt;- c("Media", "Error")</span></span>
+<span id="cb32-127"><a href="#cb32-127" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_18O_comb)</span></span>
+<span id="cb32-128"><a href="#cb32-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-129"><a href="#cb32-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-130"><a href="#cb32-130" aria-hidden="true" tabindex="-1"></a><span class="fu">## ✅ Comprovación Isoscape Sr y δ¹⁸O</span></span>
+<span id="cb32-131"><a href="#cb32-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-132"><a href="#cb32-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-133"><a href="#cb32-133" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(2, 1))</span></span>
+<span id="cb32-134"><a href="#cb32-134" aria-hidden="true" tabindex="-1"></a><span class="in">#Isoscape de Estroncio</span></span>
+<span id="cb32-135"><a href="#cb32-135" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_sr_comb)</span></span>
+<span id="cb32-136"><a href="#cb32-136" aria-hidden="true" tabindex="-1"></a><span class="in">#Isoscape de Oxígneo</span></span>
+<span id="cb32-137"><a href="#cb32-137" aria-hidden="true" tabindex="-1"></a><span class="in">plot(iso_18O_comb)</span></span>
+<span id="cb32-138"><a href="#cb32-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-139"><a href="#cb32-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-140"><a href="#cb32-140" aria-hidden="true" tabindex="-1"></a><span class="fu"># ➕Realización de un Isoscape Dual Sr - 18O</span></span>
+<span id="cb32-141"><a href="#cb32-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-142"><a href="#cb32-142" aria-hidden="true" tabindex="-1"></a>Se unifican los Isoscapes de Estroncio y Oxígeno en un solo Isoscape para poder realizar las asignaciones individuales con los dos isótopos. Se unifican tanto los calculados como los de error, para obtener un isoscape calculado y otro del error acumulado.</span>
+<span id="cb32-143"><a href="#cb32-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-144"><a href="#cb32-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-145"><a href="#cb32-145" aria-hidden="true" tabindex="-1"></a><span class="in">Dual_isoscape_asig &lt;- isoStack(iso_sr_comb, iso_18O_comb)</span></span>
+<span id="cb32-146"><a href="#cb32-146" aria-hidden="true" tabindex="-1"></a><span class="in">plot(Dual_isoscape_asig)</span></span>
+<span id="cb32-147"><a href="#cb32-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-148"><a href="#cb32-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-149"><a href="#cb32-149" aria-hidden="true" tabindex="-1"></a><span class="fu"># 📄 Carga y transformación de datos isotópicos</span></span>
+<span id="cb32-150"><a href="#cb32-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-151"><a href="#cb32-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📂 Paso 0: Ingresar datos isotópicos de los tejidos dentales</span></span>
+<span id="cb32-152"><a href="#cb32-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-153"><a href="#cb32-153" aria-hidden="true" tabindex="-1"></a>Cargamos mediante un archivo .csv los datos isotópicos</span>
+<span id="cb32-154"><a href="#cb32-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-155"><a href="#cb32-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-156"><a href="#cb32-156" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.BDQ &lt;- read.csv("G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_BDQ.csv")</span></span>
+<span id="cb32-157"><a href="#cb32-157" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.TJB &lt;- read.csv("G:/My Drive/Sr ISOSCAPE/New Code For South Asia/iso_data_parque_TJB.csv")</span></span>
+<span id="cb32-158"><a href="#cb32-158" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.BDQ</span></span>
+<span id="cb32-159"><a href="#cb32-159" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.TJB</span></span>
+<span id="cb32-160"><a href="#cb32-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-161"><a href="#cb32-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-162"><a href="#cb32-162" aria-hidden="true" tabindex="-1"></a><span class="fu">## 💧 Paso 1: Conversión de δ¹⁸O VPDB a VSMOW</span></span>
+<span id="cb32-163"><a href="#cb32-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-164"><a href="#cb32-164" aria-hidden="true" tabindex="-1"></a>La conversión se realiza con la fórmula de **Kim et al. (2015)**:</span>
+<span id="cb32-165"><a href="#cb32-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-166"><a href="#cb32-166" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-167"><a href="#cb32-167" aria-hidden="true" tabindex="-1"></a>\delta^{18}O_{VSMOW} = 1.03092 \times \delta^{18}O_{VPDB} + 30.92</span>
+<span id="cb32-168"><a href="#cb32-168" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-169"><a href="#cb32-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-170"><a href="#cb32-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-171"><a href="#cb32-171" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.BDQ$d18OVSMOW &lt;- iso.data.BDQ$d18O * 1.03092 + 30.92</span></span>
+<span id="cb32-172"><a href="#cb32-172" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.TJB$d18OVSMOW &lt;- iso.data.TJB$d18O * 1.03092 + 30.92</span></span>
+<span id="cb32-173"><a href="#cb32-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-174"><a href="#cb32-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-175"><a href="#cb32-175" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🧪 Paso 2: Convertir carbonatos (CO₃) a fosfatos (PO₄)</span></span>
+<span id="cb32-176"><a href="#cb32-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-177"><a href="#cb32-177" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📘 Método **Pellegrini et al. (2011)**</span></span>
+<span id="cb32-178"><a href="#cb32-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-179"><a href="#cb32-179" aria-hidden="true" tabindex="-1"></a>La conversión de δ¹⁸O medido en carbonatos (CO₃) a fosfatos (PO₄) se realiza mediante la ecuación:</span>
+<span id="cb32-180"><a href="#cb32-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-181"><a href="#cb32-181" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-182"><a href="#cb32-182" aria-hidden="true" tabindex="-1"></a>\delta^{18}O_{PO_4} = 0.950 \times \delta^{18}O_{CO_3} - 7.51</span>
+<span id="cb32-183"><a href="#cb32-183" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-184"><a href="#cb32-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-185"><a href="#cb32-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-186"><a href="#cb32-186" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.TJB$fos_pellegrini2011 &lt;- 0.950 * iso.data.TJB$d18OVSMOW - 7.51</span></span>
+<span id="cb32-187"><a href="#cb32-187" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.BDQ$fos_pellegrini2011 &lt;- 0.950 * iso.data.BDQ$d18OVSMOW - 7.51</span></span>
+<span id="cb32-188"><a href="#cb32-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-189"><a href="#cb32-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-190"><a href="#cb32-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🌧️ Paso 3: Conversión de fosfatos a agua meteórica (caprinos)</span></span>
+<span id="cb32-191"><a href="#cb32-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-192"><a href="#cb32-192" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🧪 Método **Delgado-Huertas et al. (1995)**</span></span>
+<span id="cb32-193"><a href="#cb32-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-194"><a href="#cb32-194" aria-hidden="true" tabindex="-1"></a>Fórmula original:</span>
+<span id="cb32-195"><a href="#cb32-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-196"><a href="#cb32-196" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-197"><a href="#cb32-197" aria-hidden="true" tabindex="-1"></a>{\delta^{18}O_{PO_4}= 0.88 \times \delta^{18}O_{\text{agua}} + 24.1}</span>
+<span id="cb32-198"><a href="#cb32-198" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-199"><a href="#cb32-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-200"><a href="#cb32-200" aria-hidden="true" tabindex="-1"></a>Restituimos la fórmula original para calcular δ¹⁸O del agua meteórica a partir del fosfato contenido en el esmalte:</span>
+<span id="cb32-201"><a href="#cb32-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-202"><a href="#cb32-202" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-203"><a href="#cb32-203" aria-hidden="true" tabindex="-1"></a>\delta^{18}O_{\text{agua}} = \frac{(\delta^{18}O_{PO_4} - 24.1)}{0.88}</span>
+<span id="cb32-204"><a href="#cb32-204" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb32-205"><a href="#cb32-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-206"><a href="#cb32-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-207"><a href="#cb32-207" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.TJB$d18OPaleometeor_Water_Delgado &lt;- (iso.data.TJB$fos_pellegrini2011 - 24.1) / 0.88</span></span>
+<span id="cb32-208"><a href="#cb32-208" aria-hidden="true" tabindex="-1"></a><span class="in">iso.data.BDQ$d18OPaleometeor_Water_Delgado &lt;- (iso.data.BDQ$fos_pellegrini2011 - 24.1) / 0.88</span></span>
+<span id="cb32-209"><a href="#cb32-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-210"><a href="#cb32-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-211"><a href="#cb32-211" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🧾 Resultados isotópicos obtenidos</span></span>
+<span id="cb32-212"><a href="#cb32-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-213"><a href="#cb32-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-214"><a href="#cb32-214" aria-hidden="true" tabindex="-1"></a><span class="in">kable(iso.data.BDQ, caption = "Resultados de Isótopos para BDQ")</span></span>
+<span id="cb32-215"><a href="#cb32-215" aria-hidden="true" tabindex="-1"></a><span class="in">kable(iso.data.TJB, caption = "Resultados de Isótopos para TJB")</span></span>
+<span id="cb32-216"><a href="#cb32-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-217"><a href="#cb32-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-218"><a href="#cb32-218" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🧬 Filtrar individuos para trabajar cada uno</span></span>
+<span id="cb32-219"><a href="#cb32-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-220"><a href="#cb32-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=5, fig.width=5, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-221"><a href="#cb32-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-222"><a href="#cb32-222" aria-hidden="true" tabindex="-1"></a><span class="in">Indiv.1BDQ &lt;- iso.data.BDQ %&gt;% filter(ID %in% c("BDQ.1.1", "BDQ.1.6", "BDQ.1.12", "BDQ.2.1","BDQ.2.7","BDQ.2.10"))</span></span>
+<span id="cb32-223"><a href="#cb32-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-224"><a href="#cb32-224" aria-hidden="true" tabindex="-1"></a><span class="in">Indiv.1BDQ_try &lt;- subset(Indiv.1BDQ, select=c("ID","Sr","d18OPaleometeor_Water_Delgado"))</span></span>
+<span id="cb32-225"><a href="#cb32-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-226"><a href="#cb32-226" aria-hidden="true" tabindex="-1"></a><span class="in">Indiv.1BDQ_try</span></span>
+<span id="cb32-227"><a href="#cb32-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-228"><a href="#cb32-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-229"><a href="#cb32-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-230"><a href="#cb32-230" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🎯 Mapa probabilístico con \`assignR\` de Estroncio</span></span>
+<span id="cb32-231"><a href="#cb32-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-232"><a href="#cb32-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-233"><a href="#cb32-233" aria-hidden="true" tabindex="-1"></a><span class="in">#| layout-nrow: 3</span></span>
+<span id="cb32-234"><a href="#cb32-234" aria-hidden="true" tabindex="-1"></a><span class="in">#| column: page</span></span>
+<span id="cb32-235"><a href="#cb32-235" aria-hidden="true" tabindex="-1"></a><span class="in">Ind_assig_Sr &lt;- assignR::pdRaster(iso_sr_comb, subset(Indiv.1BDQ, select = c("ID", "Sr")))</span></span>
+<span id="cb32-236"><a href="#cb32-236" aria-hidden="true" tabindex="-1"></a><span class="in">qtl_plot_0.2_Sr &lt;- assignR::qtlRaster(Ind_assig_Sr, threshold = 0.2, thresholdType = "prob",genplot = F)</span></span>
+<span id="cb32-237"><a href="#cb32-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-238"><a href="#cb32-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-239"><a href="#cb32-239" aria-hidden="true" tabindex="-1"></a>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Sr</span>
+<span id="cb32-240"><a href="#cb32-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-241"><a href="#cb32-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}</span></span>
+<span id="cb32-242"><a href="#cb32-242" aria-hidden="true" tabindex="-1"></a><span class="in">#ggplot()+</span></span>
+<span id="cb32-243"><a href="#cb32-243" aria-hidden="true" tabindex="-1"></a><span class="in">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb32-244"><a href="#cb32-244" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_spatraster(data = qtl_plot_0.2_Sr)+</span></span>
+<span id="cb32-245"><a href="#cb32-245" aria-hidden="true" tabindex="-1"></a><span class="in">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"#), name= "", labels= c("No", "Sí", "No def."))+</span></span>
+<span id="cb32-246"><a href="#cb32-246" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb32-247"><a href="#cb32-247" aria-hidden="true" tabindex="-1"></a><span class="in">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb32-248"><a href="#cb32-248" aria-hidden="true" tabindex="-1"></a><span class="in">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb32-249"><a href="#cb32-249" aria-hidden="true" tabindex="-1"></a><span class="in">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb32-250"><a href="#cb32-250" aria-hidden="true" tabindex="-1"></a><span class="in">#panel.background = element_rect(fill = "transparent", color = 'black', #size = 0.5),</span></span>
+<span id="cb32-251"><a href="#cb32-251" aria-hidden="true" tabindex="-1"></a><span class="in">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb32-252"><a href="#cb32-252" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb32-253"><a href="#cb32-253" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.title.align = 0.5, legend.title = element_text(size=12, face#="bold"),</span></span>
+<span id="cb32-254"><a href="#cb32-254" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb32-255"><a href="#cb32-255" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb32-256"><a href="#cb32-256" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb32-257"><a href="#cb32-257" aria-hidden="true" tabindex="-1"></a><span class="in">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb32-258"><a href="#cb32-258" aria-hidden="true" tabindex="-1"></a><span class="in">#style = north_arrow_fancy_orienteering)</span></span>
+<span id="cb32-259"><a href="#cb32-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-260"><a href="#cb32-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-261"><a href="#cb32-261" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🎯 Mapa probabilístico con \`assignR\` de Oxígeno</span></span>
+<span id="cb32-262"><a href="#cb32-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-263"><a href="#cb32-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-264"><a href="#cb32-264" aria-hidden="true" tabindex="-1"></a><span class="in">#| layout-nrow: 3</span></span>
+<span id="cb32-265"><a href="#cb32-265" aria-hidden="true" tabindex="-1"></a><span class="in">#| column: page</span></span>
+<span id="cb32-266"><a href="#cb32-266" aria-hidden="true" tabindex="-1"></a><span class="in">Ind_assig_Ox &lt;- assignR::pdRaster(iso_18O_comb, subset(Indiv.1BDQ, select = c("ID", "d18OPaleometeor_Water_Delgado")))</span></span>
+<span id="cb32-267"><a href="#cb32-267" aria-hidden="true" tabindex="-1"></a><span class="in">qtl_plot_0.2_Ox &lt;- assignR::qtlRaster(Ind_assig_Ox, threshold = 0.2, thresholdType = "prob",genplot = F)</span></span>
+<span id="cb32-268"><a href="#cb32-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-269"><a href="#cb32-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-270"><a href="#cb32-270" aria-hidden="true" tabindex="-1"></a>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Ox</span>
+<span id="cb32-271"><a href="#cb32-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-272"><a href="#cb32-272" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}</span></span>
+<span id="cb32-273"><a href="#cb32-273" aria-hidden="true" tabindex="-1"></a><span class="in">#ggplot()+</span></span>
+<span id="cb32-274"><a href="#cb32-274" aria-hidden="true" tabindex="-1"></a><span class="in">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb32-275"><a href="#cb32-275" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_spatraster(data = qtl_plot_0.2_Ox)+</span></span>
+<span id="cb32-276"><a href="#cb32-276" aria-hidden="true" tabindex="-1"></a><span class="in">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"#), name= "", labels= c("No", "Sí", "No #def."))+</span></span>
+<span id="cb32-277"><a href="#cb32-277" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb32-278"><a href="#cb32-278" aria-hidden="true" tabindex="-1"></a><span class="in">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb32-279"><a href="#cb32-279" aria-hidden="true" tabindex="-1"></a><span class="in">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb32-280"><a href="#cb32-280" aria-hidden="true" tabindex="-1"></a><span class="in">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb32-281"><a href="#cb32-281" aria-hidden="true" tabindex="-1"></a><span class="in">#panel.background = element_rect(fill = "transparent", color = 'black', #size = 0.5),</span></span>
+<span id="cb32-282"><a href="#cb32-282" aria-hidden="true" tabindex="-1"></a><span class="in">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb32-283"><a href="#cb32-283" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb32-284"><a href="#cb32-284" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.title.align = 0.5, legend.title = element_text(size=12, face#="bold"),</span></span>
+<span id="cb32-285"><a href="#cb32-285" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb32-286"><a href="#cb32-286" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb32-287"><a href="#cb32-287" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb32-288"><a href="#cb32-288" aria-hidden="true" tabindex="-1"></a><span class="in">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb32-289"><a href="#cb32-289" aria-hidden="true" tabindex="-1"></a><span class="in">#style = north_arrow_fancy_orienteering)</span></span>
+<span id="cb32-290"><a href="#cb32-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-291"><a href="#cb32-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-292"><a href="#cb32-292" aria-hidden="true" tabindex="-1"></a><span class="fu"># 🎯 Mapa probabilístico con \`assignR\` Dual (Sr + Oxígeno)</span></span>
+<span id="cb32-293"><a href="#cb32-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-294"><a href="#cb32-294" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=TRUE, warning=FALSE}</span></span>
+<span id="cb32-295"><a href="#cb32-295" aria-hidden="true" tabindex="-1"></a><span class="in">#| layout-nrow: 3</span></span>
+<span id="cb32-296"><a href="#cb32-296" aria-hidden="true" tabindex="-1"></a><span class="in">#| column: page</span></span>
+<span id="cb32-297"><a href="#cb32-297" aria-hidden="true" tabindex="-1"></a><span class="in">Ind_assig_dual &lt;- assignR::pdRaster(Dual_isoscape_asig, subset(Indiv.1BDQ, select = c("ID","Sr", "d18OPaleometeor_Water_Delgado")))</span></span>
+<span id="cb32-298"><a href="#cb32-298" aria-hidden="true" tabindex="-1"></a><span class="in">qtl_plot_0.2_dual &lt;- assignR::qtlRaster(Ind_assig_dual, threshold = 0.2, thresholdType = "prob",genplot = F)</span></span>
+<span id="cb32-299"><a href="#cb32-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-300"><a href="#cb32-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-301"><a href="#cb32-301" aria-hidden="true" tabindex="-1"></a>✌️Mapa Resultante de la asignación de las mediciones de un Individuo en el Isoscape de Sr</span>
+<span id="cb32-302"><a href="#cb32-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-303"><a href="#cb32-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}</span></span>
+<span id="cb32-304"><a href="#cb32-304" aria-hidden="true" tabindex="-1"></a><span class="in">#ggplot()+</span></span>
+<span id="cb32-305"><a href="#cb32-305" aria-hidden="true" tabindex="-1"></a><span class="in">#facet_wrap(~lyr, ncol = 3) +</span></span>
+<span id="cb32-306"><a href="#cb32-306" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_spatraster(data = qtl_plot_0.2_dual)+</span></span>
+<span id="cb32-307"><a href="#cb32-307" aria-hidden="true" tabindex="-1"></a><span class="in">#scale_fill_manual(values = c("TRUE" = "springgreen3", "FALSE" = "snow"), name= "", labels= c("No", "Sí", "No ##def."))+</span></span>
+<span id="cb32-308"><a href="#cb32-308" aria-hidden="true" tabindex="-1"></a><span class="in">#geom_point(data = iso.data.BDQ, aes(X, Y), size = 3, shape = 16) +</span></span>
+<span id="cb32-309"><a href="#cb32-309" aria-hidden="true" tabindex="-1"></a><span class="in">#labs(x = NULL, y = NULL)+</span></span>
+<span id="cb32-310"><a href="#cb32-310" aria-hidden="true" tabindex="-1"></a><span class="in">#theme(panel.grid = element_blank(), panel.ontop = TRUE,</span></span>
+<span id="cb32-311"><a href="#cb32-311" aria-hidden="true" tabindex="-1"></a><span class="in">#axis.text = element_text(size = 13, face = "bold", color = "black"),</span></span>
+<span id="cb32-312"><a href="#cb32-312" aria-hidden="true" tabindex="-1"></a><span class="in">#panel.background = element_rect(fill = "transparent", color = 'black', size = 0.5),</span></span>
+<span id="cb32-313"><a href="#cb32-313" aria-hidden="true" tabindex="-1"></a><span class="in">#strip.text = element_text(size = 13, face = "bold"),</span></span>
+<span id="cb32-314"><a href="#cb32-314" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.key.width = unit(1, "cm"), legend.key.height = unit(1, "cm"),</span></span>
+<span id="cb32-315"><a href="#cb32-315" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.title.align = 0.5, legend.title = element_text(size=12, face="bold"),</span></span>
+<span id="cb32-316"><a href="#cb32-316" aria-hidden="true" tabindex="-1"></a><span class="in">#legend.text = element_text(size=12, face="bold")) +</span></span>
+<span id="cb32-317"><a href="#cb32-317" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_scale(location = "tl", width_hint = .18, style = "bar") +</span></span>
+<span id="cb32-318"><a href="#cb32-318" aria-hidden="true" tabindex="-1"></a><span class="in">#annotation_north_arrow(location = "bl", which_north = "true",</span></span>
+<span id="cb32-319"><a href="#cb32-319" aria-hidden="true" tabindex="-1"></a><span class="in">#pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),</span></span>
+<span id="cb32-320"><a href="#cb32-320" aria-hidden="true" tabindex="-1"></a><span class="in">#style = north_arrow_fancy_orienteering)</span></span>
+<span id="cb32-321"><a href="#cb32-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
